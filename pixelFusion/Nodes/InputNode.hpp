@@ -19,6 +19,7 @@ namespace pf
         void Update() override;
         void Render() override;
     private:
+        int dialogId;
         bool loaded, preview;
     };
 }

@@ -6,6 +6,7 @@
 //
 
 #include "InputNode.hpp"
+#include "UID.hpp"
 
 #include <ImGuiFileDialog.h>
 
@@ -13,6 +14,7 @@ namespace pf
 {
     InputNode::InputNode()
     {
+        dialogId = UID::Register("Dialog");
         InitOutputAttribut();
         loaded = false;
         preview = false;
@@ -20,7 +22,7 @@ namespace pf
     
     InputNode::~InputNode()
     {
-        
+        UID::Free("Dialog", dialogId);
     }
     
     void InputNode::Update()
@@ -40,18 +42,18 @@ namespace pf
                 ImGui::Checkbox("Preview", &preview);
                 if (preview)
                 {
-                    ImGui::Image((void*)textureId, ImVec2(OutputImage->columns(), OutputImage->rows()));
+                    ImGui::Image((void*)(uintptr_t)textureId, ImVec2(OutputImage->columns(), OutputImage->rows()));
                 }
             }
         ImNodes::EndOutputAttribute();
         
         if (ImGui::Button("Open image"))
         {
-            ImGuiFileDialog::Instance()->OpenModal(std::string("ChooseFileDlgKey") + std::to_string(Id), "Open image", ".png", ".");
+            ImGuiFileDialog::Instance()->OpenModal(std::string("ChooseFileDlgKey") + std::to_string(dialogId), "Open image", ".png", ".");
             RequestBlockInput = true;
         }
 
-        if (ImGuiFileDialog::Instance()->Display(std::string("ChooseFileDlgKey") + std::to_string(Id)))
+        if (ImGuiFileDialog::Instance()->Display(std::string("ChooseFileDlgKey") + std::to_string(dialogId)))
         {
             if (ImGuiFileDialog::Instance()->IsOk())
             {

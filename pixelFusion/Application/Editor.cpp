@@ -14,12 +14,14 @@
 
 #include "InputNode.hpp"
 #include "OutputNode.hpp"
+#include "ScaleNode.hpp"
+#include "RotateNode.hpp"
 #include "GuassianBlurNode.hpp"
 #include "MotionBlurNode.hpp"
 #include "EmbossNode.hpp"
 #include "CharcoalNode.hpp"
 #include "RotateNode.hpp"
-#include "RotateNode.hpp"
+#include "BlendNode.hpp"
 #include "UID.hpp"
 
 using namespace Magick;
@@ -36,7 +38,8 @@ namespace pf
     
     }
 
-    void Editor::resizeCallback(GLFWwindow* window, int width, int height) {
+    void Editor::resizeCallback(GLFWwindow* window, int width, int height)
+    {
         Editor* handler = static_cast<Editor*>(glfwGetWindowUserPointer(window));
         handler->onWindowSizeChanged(window, width, height);
     }
@@ -235,6 +238,25 @@ namespace pf
             nodes.push_back(std::make_shared<OutputNode>());
         }
         ImGui::SameLine();
+        ImGui::Spacing();
+        ImGui::SameLine();
+        if (ImGui::Button("Blend"))
+        {
+            nodes.push_back(std::make_shared<BlendNode>());
+        }
+        ImGui::SameLine();
+        ImGui::Spacing();
+        ImGui::SameLine();
+        if (ImGui::Button("Scale"))
+        {
+            nodes.push_back(std::make_shared<ScaleNode>());
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Rotate"))
+        {
+            nodes.push_back(std::make_shared<RotateNode>());
+        }
+        ImGui::SameLine();
         if (ImGui::Button("Guassian blur"))
         {
             nodes.push_back(std::make_shared<GuassianBlurNode>());
@@ -253,16 +275,6 @@ namespace pf
         if (ImGui::Button("Charcoal"))
         {
             nodes.push_back(std::make_shared<CharcoalNode>());
-        }
-        ImGui::SameLine();
-        if (ImGui::Button("Threshold"))
-        {
-            nodes.push_back(std::make_shared<RotateNode>());
-        }
-        ImGui::SameLine();
-        if (ImGui::Button("Rotate"))
-        {
-            nodes.push_back(std::make_shared<RotateNode>());
         }
         ImGui::End();
         

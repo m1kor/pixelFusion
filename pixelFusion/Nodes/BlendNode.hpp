@@ -1,8 +1,8 @@
 //
-//  OutputNode.hpp
+//  BlendNode.hpp
 //  pixelFusion
 //
-//  Created by ミカエル on 07/05/2023.
+//  Created by ミカエル on 30/05/2023.
 //
 
 #pragma once
@@ -11,14 +11,14 @@
 
 namespace pf
 {
-    class OutputNode : public Node
+    class BlendNode : public Node
     {
     public:
-        OutputNode();
-        ~OutputNode();
+        BlendNode();
+        ~BlendNode();
         void Update() override;
         void Render() override;
     private:
-        int dialogId;
+        int selectedBlendMode;
     };
 }

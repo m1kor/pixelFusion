@@ -14,12 +14,13 @@ namespace pf
 {
     OutputNode::OutputNode()
     {
+        dialogId = UID::Register("Dialog");
         InputAttributIds.push_back(UID::Register("Attribut"));
     }
     
     OutputNode::~OutputNode()
     {
-        
+        UID::Free("Dialog", dialogId);
     }
     
     void OutputNode::Update()
@@ -42,21 +43,24 @@ namespace pf
         ImNodes::EndNodeTitleBar();
         ImNodes::BeginInputAttribute(InputAttributIds[0]);
             ImGui::Text("Preview");
-            ImGui::Image((void*)textureId, ImVec2(OutputImage->columns(), OutputImage->rows()));
+            ImGui::Image((void*)(uintptr_t)textureId, ImVec2(OutputImage->columns(), OutputImage->rows()));
         ImNodes::EndInputAttribute();
         
         if (ImGui::Button("Save image"))
         {
-            ImGuiFileDialog::Instance()->OpenModal(std::string("ChooseFileDlgKey") + std::to_string(Id), "Save image", ".png", ".");
+            ImGuiFileDialog::Instance()->OpenModal(std::string("ChooseFileDlgKey") + std::to_string(dialogId), "Save image", ".jpg", ".");
+            RequestBlockInput = true;
         }
 
-        if (ImGuiFileDialog::Instance()->Display(std::string("ChooseFileDlgKey") + std::to_string(Id)))
+        if (ImGuiFileDialog::Instance()->Display(std::string("ChooseFileDlgKey") + std::to_string(dialogId)))
         {
             if (ImGuiFileDialog::Instance()->IsOk())
             {
-                OutputImage->magick("png");
+                OutputImage->type(MagickCore::TrueColorType);
+                OutputImage->magick("JPG");
                 OutputImage->write(ImGuiFileDialog::Instance()->GetFilePathName());
             }
+            RequestBlockInput = false;
             ImGuiFileDialog::Instance()->Close();
         }
         
